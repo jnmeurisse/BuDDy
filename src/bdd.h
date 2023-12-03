@@ -525,8 +525,8 @@ private:
    friend bdd    fdd_ithvarpp(int, int64);
    friend bdd    fdd_ithsetpp(int);
    friend bdd    fdd_domainpp(int);
-   friend int    fdd_scanvar(const bdd &, int);
-   friend int*   fdd_scanallvar(const bdd &);
+   friend int64  fdd_scanvar(const bdd &, int);
+   friend int64* fdd_scanallvar(const bdd &);
    friend bdd    fdd_equalspp(int, int);
    friend void   fdd_printset(const bdd &);
    friend void   fdd_fprintset(FILE*, const bdd &);

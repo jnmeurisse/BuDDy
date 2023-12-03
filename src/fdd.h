@@ -93,10 +93,10 @@ inline bdd fdd_ithsetpp(int var)
 inline bdd fdd_domainpp(int var)
 { return fdd_domain(var); }
 
-inline int fdd_scanvar(const bdd &r, int var)
+inline int64 fdd_scanvar(const bdd &r, int var)
 { return fdd_scanvar(r.root, var); }
 
-inline int* fdd_scanallvar(const bdd &r)
+inline int64* fdd_scanallvar(const bdd &r)
 { return fdd_scanallvar(r.root); }
 
 inline bdd fdd_equalspp(int left, int right)
