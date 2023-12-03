@@ -1,5 +1,4 @@
-build/*
-.vscode/*
-Win32/*
-x64/*
-
+visualc/Win32/*
+visualc/x64/*
+visualc/*.db
+visualc/.vs/*
