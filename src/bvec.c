@@ -147,14 +147,14 @@ bvec bvec_false(int bitnum)
 NAME    {* bvec\_con *}
 SECTION {* bvec *}
 SHORT   {* Build a boolean vector representing an integer value *}
-PROTO   {* bvec bvec_con(int bitnum, int val) *}
+PROTO   {* bvec bvec_con(int bitnum, int64 val) *}
 DESCR   {* Builds a boolean vector that represents the value {\tt val}
            using {\tt bitnum} bits. The value will be represented with the
-	   LSB at the position 0 and the MSB at position {\tt bitnum}-1.*}
+           LSB at the position 0 and the MSB at position {\tt bitnum}-1.*}
 RETURN  {* The boolean vector (which is already reference counted) *}
 ALSO    {* bvec\_true, bvec\_false, bvec\_var *}
 */
-bvec bvec_con(int bitnum, int val)
+bvec bvec_con(int bitnum, int64 val)
 {
    bvec v = bvec_build(bitnum,0);
    int n;
@@ -162,9 +162,9 @@ bvec bvec_con(int bitnum, int val)
    for (n=0 ; n<v.bitnum ; n++)
    {
       if (val & 0x1)
-	 v.bitvec[n] = bddtrue;
+         v.bitvec[n] = bddtrue;
       else
-	 v.bitvec[n] = bddfalse;
+         v.bitvec[n] = bddfalse;
 
       val = val >> 1;
    }

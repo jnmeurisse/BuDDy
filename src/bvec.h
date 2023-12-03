@@ -54,9 +54,9 @@ PROTO   {* typedef struct s_bvec
 typedef BVEC bvec; *}
 DESCR   {* This data structure is used to store boolean vectors. The field
            {\tt bitnum} is the number of elements in the vector and the
-	   field {\tt bitvec} contains the actual BDDs in the vector.
-	   The C++ version of {\tt bvec} is documented at the beginning of
-	   this document *}
+           field {\tt bitvec} contains the actual BDDs in the vector.
+           The C++ version of {\tt bvec} is documented at the beginning of
+           this document *}
 */
 typedef struct s_bvec
 {
@@ -77,7 +77,7 @@ extern "C" {
 extern BVEC bvec_copy(BVEC v);
 extern BVEC bvec_true(int bitnum);
 extern BVEC bvec_false(int bitnum);
-extern BVEC bvec_con(int bitnum, int val);
+extern BVEC bvec_con(int bitnum, int64 val);
 extern BVEC bvec_var(int bitnum, int offset, int step);
 extern BVEC bvec_varfdd(int var);
 extern BVEC bvec_varvec(int bitnum, int *var);
@@ -125,11 +125,11 @@ class bvec
 {
  public:
 
-   bvec(void)                { roots.bitvec=NULL; roots.bitnum=0; }
-   bvec(int bitnum)          { roots=bvec_false(bitnum); }
-   bvec(int bitnum, int val) { roots=bvec_con(bitnum,val); }
-   bvec(const bvec &v)       { roots=bvec_copy(v.roots); }
-   ~bvec(void)               { bvec_free(roots); }
+   bvec(void)                  { roots.bitvec=NULL; roots.bitnum=0; }
+   bvec(int bitnum)            { roots=bvec_false(bitnum); }
+   bvec(int bitnum, int64 val) { roots=bvec_con(bitnum,val); }
+   bvec(const bvec &v)         { roots=bvec_copy(v.roots); }
+   ~bvec(void)                 { bvec_free(roots); }
 
    void set(int i, const bdd &b);
    bdd operator[](int i)  const { return roots.bitvec[i]; }
@@ -144,7 +144,7 @@ private:
 
    friend bvec bvec_truepp(int bitnum);
    friend bvec bvec_falsepp(int bitnum);
-   friend bvec bvec_conpp(int bitnum, int val);
+   friend bvec bvec_conpp(int bitnum, int64 val);
    friend bvec bvec_varpp(int bitnum, int offset, int step);
    friend bvec bvec_varfddpp(int var);
    friend bvec bvec_varvecpp(int bitnum, int *var);
@@ -205,7 +205,7 @@ inline bvec bvec_truepp(int bitnum)
 inline bvec bvec_falsepp(int bitnum)
 { return bvec_false(bitnum); }
 
-inline bvec bvec_conpp(int bitnum, int val)
+inline bvec bvec_conpp(int bitnum, int64 val)
 { return bvec_con(bitnum, val); }
 
 inline bvec bvec_varpp(int bitnum, int offset, int step)
