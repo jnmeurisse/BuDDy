@@ -39,6 +39,7 @@
 
 *************************************************************************/
 #include "config.h"
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -755,19 +756,19 @@ void bdd_fprintstat(FILE *ofile)
    fprintf(ofile, "\nCache statistics\n");
    fprintf(ofile, "----------------\n");
    
-   fprintf(ofile, "Unique Access:  %ld\n", s.uniqueAccess);
-   fprintf(ofile, "Unique Chain:   %ld\n", s.uniqueChain);
-   fprintf(ofile, "Unique Hit:     %ld\n", s.uniqueHit);
-   fprintf(ofile, "Unique Miss:    %ld\n", s.uniqueMiss);
+   fprintf(ofile, "Unique Access:  %zd\n", s.uniqueAccess);
+   fprintf(ofile, "Unique Chain:   %zd\n", s.uniqueChain);
+   fprintf(ofile, "Unique Hit:     %zd\n", s.uniqueHit);
+   fprintf(ofile, "Unique Miss:    %zd\n", s.uniqueMiss);
    fprintf(ofile, "=> Hit rate =   %.2f\n",
 	   (s.uniqueHit+s.uniqueMiss > 0) ? 
 	   ((float)s.uniqueHit)/((float)s.uniqueHit+s.uniqueMiss) : 0);
-   fprintf(ofile, "Operator Hits:  %ld\n", s.opHit);
-   fprintf(ofile, "Operator Miss:  %ld\n", s.opMiss);
+   fprintf(ofile, "Operator Hits:  %zd\n", s.opHit);
+   fprintf(ofile, "Operator Miss:  %zd\n", s.opMiss);
    fprintf(ofile, "=> Hit rate =   %.2f\n",
 	   (s.opHit+s.opMiss > 0) ? 
 	   ((float)s.opHit)/((float)s.opHit+s.opMiss) : 0);
-   fprintf(ofile, "Swap count =    %ld\n", s.swapCount);
+   fprintf(ofile, "Swap count =    %zd\n", s.swapCount);
 }
 
 
