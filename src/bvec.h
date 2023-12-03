@@ -74,39 +74,39 @@ extern "C" {
 #endif
    
    /* Prototypes for bvec.c */
-extern BVEC bvec_copy(BVEC v);
-extern BVEC bvec_true(int bitnum);
-extern BVEC bvec_false(int bitnum);
-extern BVEC bvec_con(int bitnum, int64 val);
-extern BVEC bvec_var(int bitnum, int offset, int step);
-extern BVEC bvec_varfdd(int var);
-extern BVEC bvec_varvec(int bitnum, int *var);
-extern BVEC bvec_coerce(int bitnum, BVEC v);
-extern int  bvec_isconst(BVEC e);   
-extern int  bvec_val(BVEC e);   
-extern void bvec_free(BVEC v);
-extern BVEC bvec_addref(BVEC v);
-extern BVEC bvec_delref(BVEC v);
-extern BVEC bvec_map1(BVEC a, BDD (*fun)(BDD));
-extern BVEC bvec_map2(BVEC a, BVEC b, BDD (*fun)(BDD,BDD));
-extern BVEC bvec_map3(BVEC a, BVEC b, BVEC c, BDD (*fun)(BDD,BDD,BDD));
-extern BVEC bvec_add(BVEC left, BVEC right);
-extern BVEC bvec_sub(BVEC left, BVEC right);
-extern BVEC bvec_mulfixed(BVEC e, int c);
-extern BVEC bvec_mul(BVEC left, BVEC right);
-extern int  bvec_divfixed(BVEC e, int c, BVEC *res, BVEC *rem);
-extern int  bvec_div(BVEC left, BVEC right, BVEC *res, BVEC *rem);
-extern BVEC bvec_ite(BDD a, BVEC b, BVEC c);
-extern BVEC bvec_shlfixed(BVEC e, int pos, BDD c);
-extern BVEC bvec_shl(BVEC l, BVEC r, BDD c);
-extern BVEC bvec_shrfixed(BVEC e, int pos, BDD c);
-extern BVEC bvec_shr(BVEC l, BVEC r, BDD c);
-extern BDD  bvec_lth(BVEC left, BVEC right);
-extern BDD  bvec_lte(BVEC left, BVEC right);
-extern BDD  bvec_gth(BVEC left, BVEC right);
-extern BDD  bvec_gte(BVEC left, BVEC right);
-extern BDD  bvec_equ(BVEC left, BVEC right);
-extern BDD  bvec_neq(BVEC left, BVEC right);
+extern BVEC  bvec_copy(BVEC v);
+extern BVEC  bvec_true(int bitnum);
+extern BVEC  bvec_false(int bitnum);
+extern BVEC  bvec_con(int bitnum, int64 val);
+extern BVEC  bvec_var(int bitnum, int offset, int step);
+extern BVEC  bvec_varfdd(int var);
+extern BVEC  bvec_varvec(int bitnum, int *var);
+extern BVEC  bvec_coerce(int bitnum, BVEC v);
+extern int   bvec_isconst(BVEC e);   
+extern int64 bvec_val(BVEC e);   
+extern void  bvec_free(BVEC v);
+extern BVEC  bvec_addref(BVEC v);
+extern BVEC  bvec_delref(BVEC v);
+extern BVEC  bvec_map1(BVEC a, BDD (*fun)(BDD));
+extern BVEC  bvec_map2(BVEC a, BVEC b, BDD (*fun)(BDD,BDD));
+extern BVEC  bvec_map3(BVEC a, BVEC b, BVEC c, BDD (*fun)(BDD,BDD,BDD));
+extern BVEC  bvec_add(BVEC left, BVEC right);
+extern BVEC  bvec_sub(BVEC left, BVEC right);
+extern BVEC  bvec_mulfixed(BVEC e, int c);
+extern BVEC  bvec_mul(BVEC left, BVEC right);
+extern int   bvec_divfixed(BVEC e, int c, BVEC *res, BVEC *rem);
+extern int   bvec_div(BVEC left, BVEC right, BVEC *res, BVEC *rem);
+extern BVEC  bvec_ite(BDD a, BVEC b, BVEC c);
+extern BVEC  bvec_shlfixed(BVEC e, int pos, BDD c);
+extern BVEC  bvec_shl(BVEC l, BVEC r, BDD c);
+extern BVEC  bvec_shrfixed(BVEC e, int pos, BDD c);
+extern BVEC  bvec_shr(BVEC l, BVEC r, BDD c);
+extern BDD   bvec_lth(BVEC left, BVEC right);
+extern BDD   bvec_lte(BVEC left, BVEC right);
+extern BDD   bvec_gth(BVEC left, BVEC right);
+extern BDD   bvec_gte(BVEC left, BVEC right);
+extern BDD   bvec_equ(BVEC left, BVEC right);
+extern BDD   bvec_neq(BVEC left, BVEC right);
 
 #ifdef CPLUSPLUS
 }
@@ -142,39 +142,39 @@ private:
 
    bvec(const BVEC &v) { roots=v; } /* NOTE: Must be a shallow copy! */
 
-   friend bvec bvec_truepp(int bitnum);
-   friend bvec bvec_falsepp(int bitnum);
-   friend bvec bvec_conpp(int bitnum, int64 val);
-   friend bvec bvec_varpp(int bitnum, int offset, int step);
-   friend bvec bvec_varfddpp(int var);
-   friend bvec bvec_varvecpp(int bitnum, int *var);
-   friend bvec bvec_coerce(int bitnum, const bvec &v);
-   friend int  bvec_isconst(const bvec &e);   
-   friend int  bvec_val(const bvec &e);   
-   friend bvec bvec_copy(const bvec &v);
-   friend bvec bvec_map1(const bvec &a,
-			 bdd (*fun)(const bdd &));
-   friend bvec bvec_map2(const bvec &a, const bvec &b,
-			 bdd (*fun)(const bdd &, const bdd &));
-   friend bvec bvec_map3(const bvec &a, const bvec &b, const bvec &c,
-			 bdd (*fun)(const bdd &, const bdd &, const bdd &));
-   friend bvec bvec_add(const bvec &left, const bvec &right);
-   friend bvec bvec_sub(const bvec &left, const bvec &right);
-   friend bvec bvec_mulfixed(const bvec &e, int c);
-   friend bvec bvec_mul(const bvec &left, const bvec &right);
-   friend int  bvec_divfixed(const bvec &e, int c, bvec &res, bvec &rem);
-   friend int  bvec_div(const bvec &l, const bvec &r, bvec &res, bvec &rem);
-   friend bvec bvec_ite(const bdd& a, const bvec& b, const bvec& c);
-   friend bvec bvec_shlfixed(const bvec &e, int pos, const bdd &c);
-   friend bvec bvec_shl(const bvec &left, const bvec &right, const bdd &c);
-   friend bvec bvec_shrfixed(const bvec &e, int pos, const bdd &c);
-   friend bvec bvec_shr(const bvec &left, const bvec &right, const bdd &c);
-   friend bdd  bvec_lth(const bvec &left, const bvec &right);
-   friend bdd  bvec_lte(const bvec &left, const bvec &right);
-   friend bdd  bvec_gth(const bvec &left, const bvec &right);
-   friend bdd  bvec_gte(const bvec &left, const bvec &right);
-   friend bdd  bvec_equ(const bvec &left, const bvec &right);
-   friend bdd  bvec_neq(const bvec &left, const bvec &right);
+   friend bvec  bvec_truepp(int bitnum);
+   friend bvec  bvec_falsepp(int bitnum);
+   friend bvec  bvec_conpp(int bitnum, int64 val);
+   friend bvec  bvec_varpp(int bitnum, int offset, int step);
+   friend bvec  bvec_varfddpp(int var);
+   friend bvec  bvec_varvecpp(int bitnum, int *var);
+   friend bvec  bvec_coerce(int bitnum, const bvec &v);
+   friend int   bvec_isconst(const bvec &e);   
+   friend int64 bvec_val(const bvec &e);   
+   friend bvec  bvec_copy(const bvec &v);
+   friend bvec  bvec_map1(const bvec &a, 
+                  bdd (*fun)(const bdd &));
+   friend bvec  bvec_map2(const bvec &a, const bvec &b,
+                  bdd (*fun)(const bdd &, const bdd &));
+   friend bvec  bvec_map3(const bvec &a, const bvec &b, const bvec &c,
+                  bdd (*fun)(const bdd &, const bdd &, const bdd &));
+   friend bvec  bvec_add(const bvec &left, const bvec &right);
+   friend bvec  bvec_sub(const bvec &left, const bvec &right);
+   friend bvec  bvec_mulfixed(const bvec &e, int c);
+   friend bvec  bvec_mul(const bvec &left, const bvec &right);
+   friend int   bvec_divfixed(const bvec &e, int c, bvec &res, bvec &rem);
+   friend int   bvec_div(const bvec &l, const bvec &r, bvec &res, bvec &rem);
+   friend bvec  bvec_ite(const bdd& a, const bvec& b, const bvec& c);
+   friend bvec  bvec_shlfixed(const bvec &e, int pos, const bdd &c);
+   friend bvec  bvec_shl(const bvec &left, const bvec &right, const bdd &c);
+   friend bvec  bvec_shrfixed(const bvec &e, int pos, const bdd &c);
+   friend bvec  bvec_shr(const bvec &left, const bvec &right, const bdd &c);
+   friend bdd   bvec_lth(const bvec &left, const bvec &right);
+   friend bdd   bvec_lte(const bvec &left, const bvec &right);
+   friend bdd   bvec_gth(const bvec &left, const bvec &right);
+   friend bdd   bvec_gte(const bvec &left, const bvec &right);
+   friend bdd   bvec_equ(const bvec &left, const bvec &right);
+   friend bdd   bvec_neq(const bvec &left, const bvec &right);
 
 public:
    bvec operator&(const bvec &a) const { return bvec_map2(*this, a, bdd_and); }
@@ -223,7 +223,7 @@ inline bvec bvec_coerce(int bitnum, const bvec &v)
 inline int  bvec_isconst(const bvec &e)
 { return bvec_isconst(e.roots); }
 
-inline int  bvec_val(const bvec &e)
+inline int64  bvec_val(const bvec &e)
 { return bvec_val(e.roots); }
 
 inline bvec bvec_copy(const bvec &v)

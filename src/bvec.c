@@ -179,9 +179,9 @@ SECTION {* bvec *}
 SHORT   {* build a boolean vector with BDD variables *}
 PROTO   {* bvec bvec_var(int bitnum, int offset, int step) *}
 DESCR   {* Builds a boolean vector with the BDD variables $v_1, \ldots,
-           v_n$ as the elements. Each variable will be the the variabled
-	   numbered {\tt offset + N*step} where {\tt N} ranges from 0 to
-	   {\tt bitnum}-1.*}
+           v_n$ as the elements. Each variable will be the the variable
+           numbered {\tt offset + N*step} where {\tt N} ranges from 0 to
+           {\tt bitnum}-1.*}
 RETURN  {* The boolean vector (which is already reference counted) *}
 ALSO    {* bvec\_true, bvec\_false, bvec\_con *}
 */
@@ -206,7 +206,7 @@ SHORT   {* build a boolean vector from a FDD variable block *}
 PROTO   {* bvec bvec_varfdd(int var) *}
 DESCR   {* Builds a boolean vector which will include exactly the
            variables used to define the FDD variable block {\tt var}. The
-	   vector will have the LSB at position zero. *}
+           vector will have the LSB at position zero. *}
 RETURN  {* The boolean vector (which is already reference counted) *}
 ALSO    {* bvec\_var *}
 */
@@ -263,9 +263,9 @@ SHORT   {* adjust the size of a boolean vector *}
 PROTO   {* bvec bvec_coerce(int bitnum, bvec v) *}
 DESCR   {* Build a boolean vector with {\tt bitnum} elements copied from
            {\tt v}. If the number of elements in {\tt v} is greater than
-	   {\tt bitnum} then the most significant bits are removed, otherwise
-	   if number is smaller then the vector is padded with constant
-	   false BDDs (zeros). *}
+           {\tt bitnum} then the most significant bits are removed, otherwise
+           if number is smaller then the vector is padded with constant
+           false BDDs (zeros). *}
 RETURN  {* The new boolean vector (which is already reference counted) *}
 */
 bvec bvec_coerce(int bitnum, bvec v)
@@ -288,7 +288,7 @@ SHORT   {* test a vector for constant true/false BDDs *}
 PROTO   {* int bvec_isconst(bvec v) *}
 DESCR   {* Returns non-zero if the vector {\tt v} consists of only constant
            true or false BDDs. Otherwise zero is returned. This test should
-	   prelude any call to {\tt bvec\_val}. *}
+           prelude any call to {\tt bvec\_val}. *}
 ALSO    {* bvec\_val, bvec\_con *}
 */
 int bvec_isconst(bvec e)
@@ -297,7 +297,7 @@ int bvec_isconst(bvec e)
 
    for (n=0 ; n<e.bitnum ; n++)
       if (!ISCONST(e.bitvec[n]))
-	 return 0;
+         return 0;
 
    return 1;
 }
@@ -314,17 +314,18 @@ DESCR   {* Calculates the value represented by the bits in {\tt v} assuming
 RETURN  {* The integer value represented by {\tt v}. *}
 ALSO    {* bvec\_isconst, bvec\_con *}
 */
-int bvec_val(bvec e)
+int64 bvec_val(bvec e)
 {
-   int n, val=0;
+   int n;
+   int64 val = 0;
 
    for (n=e.bitnum-1 ; n>=0 ; n--)
       if (ISONE(e.bitvec[n]))
-	 val = (val << 1) | 1;
+         val = (val << 1) | 1;
       else if (ISZERO(e.bitvec[n]))
-	 val = val << 1;
+         val = val << 1;
       else
-	 return 0;
+         return 0;
 
    return val;
 }
