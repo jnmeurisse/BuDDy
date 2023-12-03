@@ -54,9 +54,9 @@ extern int    fdd_domainnum(void);
 extern int64  fdd_domainsize(int);
 extern int    fdd_varnum(int);
 extern int*   fdd_vars(int);
-extern BDD    fdd_ithvar(int, int);
-extern int    fdd_scanvar(BDD, int);
-extern int*   fdd_scanallvar(BDD);
+extern BDD    fdd_ithvar(int, int64);
+extern int64  fdd_scanvar(BDD, int);
+extern int64* fdd_scanallvar(BDD);
 extern BDD    fdd_ithset(int);
 extern BDD    fdd_domain(int);
 extern BDD    fdd_equals(int, int);
@@ -84,7 +84,7 @@ extern int  fdd_setpairs(bddPair*, int*, int*, int);
 
    /* FDD extensions */
 
-inline bdd fdd_ithvarpp(int var, int val)
+inline bdd fdd_ithvarpp(int var, int64 val)
 { return fdd_ithvar(var, val); }
 
 inline bdd fdd_ithsetpp(int var)

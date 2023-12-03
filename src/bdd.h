@@ -522,7 +522,7 @@ private:
    friend int    bdd_fnload(char*, bdd &);
    friend int    bdd_load(FILE*, bdd &);
    
-   friend bdd    fdd_ithvarpp(int, int);
+   friend bdd    fdd_ithvarpp(int, int64);
    friend bdd    fdd_ithsetpp(int);
    friend bdd    fdd_domainpp(int);
    friend int    fdd_scanvar(const bdd &, int);

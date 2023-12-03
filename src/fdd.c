@@ -233,7 +233,7 @@ int fdd_overlapdomain(int v1, int v2)
       d->ivar[n] = domain[v1].ivar[n];
    for (n=0 ; n<domain[v2].binsize ; n++)
       d->ivar[domain[v1].binsize+n] = domain[v2].ivar[n];
-	 
+
    d->var = bdd_makeset(d->ivar, d->binsize);
    bdd_addref(d->var);
    
@@ -363,18 +363,18 @@ int *fdd_vars(int v)
 NAME    {* fdd\_ithvar *}
 SECTION {* fdd *}
 SHORT   {* the BDD for the i'th FDD set to a specific value *}
-PROTO   {* BDD fdd_ithvar(int var, int val) *}
+PROTO   {* BDD fdd_ithvar(int var, int64 val) *}
 DESCR   {* Returns the BDD that defines the value {\tt val} for the
            finite domain block {\tt var}. The encoding places the
-	   Least Significant Bit at the top of the BDD tree
-	   (which means they will have the lowest variable index).
-	   The returned BDD will be $V_0 \conj V_1 \conj \ldots
-	   \conj V_N$ where each $V_i$ will be in positive or negative form
-	   depending on the value of {\tt val}. *}
+           Least Significant Bit at the top of the BDD tree
+           (which means they will have the lowest variable index).
+           The returned BDD will be $V_0 \conj V_1 \conj \ldots
+           \conj V_N$ where each $V_i$ will be in positive or negative form
+           depending on the value of {\tt val}. *}
 RETURN  {* The correct BDD or the constant false BDD on error. *}
 ALSO    {* fdd\_ithset *}
 */
-BDD fdd_ithvar(int var, int val)
+BDD fdd_ithvar(int var, int64 val)
 {
    int n;
    int v=1, tmp;
@@ -402,9 +402,9 @@ BDD fdd_ithvar(int var, int val)
       bdd_addref(v);
       
       if (val & 0x1)
-	 tmp = bdd_apply(bdd_ithvar(domain[var].ivar[n]), v, bddop_and);
+         tmp = bdd_apply(bdd_ithvar(domain[var].ivar[n]), v, bddop_and);
       else
-	 tmp = bdd_apply(bdd_nithvar(domain[var].ivar[n]), v, bddop_and);
+         tmp = bdd_apply(bdd_nithvar(domain[var].ivar[n]), v, bddop_and);
 
       bdd_delref(v);
       v = tmp;
@@ -426,10 +426,10 @@ RETURN  {* The value of a satisfying assignment of {\tt var}. If {\tt r} is
            the trivially false BDD, then a negative value is returned. *}
 ALSO    {* fdd\_scanallvar *}
 */
-int fdd_scanvar(BDD r, int var)
+int64 fdd_scanvar(BDD r, int var)
 {
-   int *allvar;
-   int res;
+   int64 *allvar;
+   int64 res;
 
    CHECK(r);
    if (r == bddfalse)
@@ -459,11 +459,11 @@ RETURN  {* An array with all satisfying values. If {\tt r} is the trivially
            false BDD, then NULL is returned. *}
 ALSO    {* fdd\_scanvar *}
 */
-int* fdd_scanallvar(BDD r)
+int64* fdd_scanallvar(BDD r)
 {
    int n;
    char *store;
-   int *res;
+   int64 *res;
    BDD p = r;
    
    CHECKa(r,NULL);
@@ -478,28 +478,28 @@ int* fdd_scanallvar(BDD r)
    {
       if (!ISZERO(LOW(p)))
       {
-	 store[bddlevel2var[LEVEL(p)]] = 0;
-	 p = LOW(p);
+         store[bddlevel2var[LEVEL(p)]] = 0;
+         p = LOW(p);
       }
       else
       {
-	 store[bddlevel2var[LEVEL(p)]] = 1;
-	 p = HIGH(p);
+         store[bddlevel2var[LEVEL(p)]] = 1;
+         p = HIGH(p);
       }
    }
 
-   res = NEW(int, fdvarnum);
+   res = NEW(int64, fdvarnum);
 
    for (n=0 ; n<fdvarnum ; n++)
    {
       int m;
-      int val=0;
+      int64 val=0;
       
       for (m=domain[n].binsize-1 ; m>=0 ; m--)
-	 if ( store[domain[n].ivar[m]] )
-	    val = val*2 + 1;
+         if ( store[domain[n].ivar[m]] )
+            val = val*2 + 1;
          else
-	    val = val*2;
+            val = val*2;
       
       res[n] = val;
    }
