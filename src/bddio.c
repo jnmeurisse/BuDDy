@@ -317,8 +317,9 @@ void bdd_printdot(BDD r)
 
 int bdd_fnprintdot(char *fname, BDD r)
 {
-   FILE *ofile = fopen(fname, "w");
-   if (ofile == NULL)
+   FILE *ofile = NULL;
+   errno_t err = fopen_s(&ofile, fname, "w");
+   if (err)
       return bdd_error(BDD_FILE);
    bdd_fprintdot(ofile, r);
    fclose(ofile);
@@ -373,17 +374,17 @@ PROTO   {* int bdd_fnsave(char *fname, BDD r)
 int bdd_save(FILE *ofile, BDD r) *}
 DESCR   {* Saves the nodes used by {\tt r} to either a file {\tt ofile}
            which must be opened for writing or to the file named {\tt fname}.
-	   In the last case the file will be truncated and opened for
-	   writing. *}
+           In the last case the file will be truncated and opened for
+           writing. *}
 ALSO    {* bdd\_load *}
 RETURN  {* Zero on succes, otherwise an error code from {\tt bdd.h}. *}
 */
 int bdd_fnsave(char *fname, BDD r)
 {
-   FILE *ofile;
+   FILE *ofile = NULL;
    int ok;
 
-   if ((ofile=fopen(fname,"w")) == NULL)
+   if (fopen_s(&ofile, fname,"w"))
       return bdd_error(BDD_FILE);
 
    ok = bdd_save(ofile, r);
@@ -453,31 +454,31 @@ PROTO   {* int bdd_fnload(char *fname, BDD *r)
 int bdd_load(FILE *ifile, BDD *r) *}
 DESCR   {* Loads a BDD from a file into the BDD pointed to by {\tt r}.
            The file can either be the file {\tt ifile} which must be opened
-	   for reading or the file named {\tt fname} which will be opened
-	   automatically for reading.
+           for reading or the file named {\tt fname} which will be opened
+           automatically for reading.
 
-	   The input file format consists of integers arranged in the following
-	   manner. First the number of nodes $N$ used by the BDD and then the
-	   number of variables $V$ allocated and the variable ordering
-	   in use at the time the BDD was saved.
-	   If $N$ and $V$ are both zero then the BDD is either the constant
-	   true or false BDD, indicated by a $1$ or a $0$ as the next integer.
+           The input file format consists of integers arranged in the following
+           manner. First the number of nodes $N$ used by the BDD and then the
+           number of variables $V$ allocated and the variable ordering
+           in use at the time the BDD was saved.
+           If $N$ and $V$ are both zero then the BDD is either the constant
+           true or false BDD, indicated by a $1$ or a $0$ as the next integer.
 
-	   In any other case the next $N$ sets of $4$ integers will describe
-	   the nodes used by the BDD. Each set consists of first the node
-	   number, then the variable number and then the low and high nodes.
+           In any other case the next $N$ sets of $4$ integers will describe
+           the nodes used by the BDD. Each set consists of first the node
+           number, then the variable number and then the low and high nodes.
 
-	   The nodes {\it must} be saved in a order such that any low or
-	   high node must be defined before it is mentioned. *}
+           The nodes {\it must} be saved in a order such that any low or
+           high node must be defined before it is mentioned. *}
 ALSO    {* bdd\_save *}
-RETURN  {* Zero on succes, otherwise an error code from {\tt bdd.h}. *}
+RETURN  {* Zero on success, otherwise an error code from {\tt bdd.h}. *}
 */
 int bdd_fnload(char *fname, BDD *root)
 {
-   FILE *ifile;
+   FILE *ifile = NULL;
    int ok;
 
-   if ((ifile=fopen(fname,"r")) == NULL)
+   if (fopen_s(&ifile, fname,"r"))
       return bdd_error(BDD_FILE);
 
    ok = bdd_load(ifile, root);
@@ -490,20 +491,20 @@ int bdd_load(FILE *ifile, BDD *root)
 {
    int n, vnum, tmproot;
 
-   if (fscanf(ifile, "%d %d", &lh_nodenum, &vnum) != 2)
+   if (fscanf_s(ifile, "%d %d", &lh_nodenum, &vnum) != 2)
       return bdd_error(BDD_FORMAT);
 
       /* Check for constant true / false */
    if (lh_nodenum==0  &&  vnum==0)
    {
-      fscanf(ifile, "%d", root);
+      fscanf_s(ifile, "%d", root);
       return 0;
    }
 
    if ((loadvar2level=(int*)malloc(sizeof(int)*vnum)) == NULL)
       return bdd_error(BDD_MEMORY);
    for (n=0 ; n<vnum ; n++)
-      fscanf(ifile, "%d", &loadvar2level[n]);
+      fscanf_s(ifile, "%d", &loadvar2level[n]);
    
    if (vnum > bddvarnum)
       bdd_setvarnum(vnum);
@@ -543,16 +544,16 @@ static int bdd_loaddata(FILE *ifile)
    
    for (n=0 ; n<lh_nodenum ; n++)
    {
-      if (fscanf(ifile,"%d %d %d %d", &key, &var, &low, &high) != 4)
-	 return bdd_error(BDD_FORMAT);
+      if (fscanf_s(ifile,"%d %d %d %d", &key, &var, &low, &high) != 4)
+         return bdd_error(BDD_FORMAT);
 
       if (low >= 2)
-	 low = loadhash_get(low);
+         low = loadhash_get(low);
       if (high >= 2)
-	 high = loadhash_get(high);
+         high = loadhash_get(high);
 
       if (low<0 || high<0 || var<0)
-	 return bdd_error(BDD_FORMAT);
+         return bdd_error(BDD_FORMAT);
 
       root = bdd_addref( bdd_ite(bdd_ithvar(var), high, low) );
 
