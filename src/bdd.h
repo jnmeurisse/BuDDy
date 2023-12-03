@@ -38,6 +38,8 @@
 #ifndef _BDD_H
 #define _BDD_H
 
+typedef __int64 int64;
+
    /* Allow this headerfile to define C++ constructs if requested */
 #ifdef __cplusplus
 #define CPLUSPLUS
