@@ -404,16 +404,16 @@ BDD bdd_not(BDD r)
       INITREF;
       
       if (!firstReorder)
-	 bdd_disable_reorder();
+         bdd_disable_reorder();
       res = not_rec(r);
       if (!firstReorder)
-	 bdd_enable_reorder();
+         bdd_enable_reorder();
    }
    else
    {
       bdd_checkreorder();
       if (firstReorder-- == 1)
-	 goto again;
+         goto again;
       res = BDDZERO;  /* avoid warning about res being uninitialized */
    }
 
