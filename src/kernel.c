@@ -93,7 +93,7 @@ int          bddmaxnodeincrease;    /* Max. # of nodes used to inc. table */
 BddNode*     bddnodes;          /* All of the bdd nodes */
 int          bddfreepos;        /* First free node */
 int          bddfreenum;        /* Number of free nodes */
-long int     bddproduced;       /* Number of new nodes ever produced */
+size_t       bddproduced;       /* Number of new nodes ever produced */
 int          bddvarnum;         /* Number of defined BDD variables */
 int*         bddrefstack;       /* Internal node reference stack */
 int*         bddrefstacktop;    /* Internal node reference stack top */

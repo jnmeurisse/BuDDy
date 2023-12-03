@@ -89,7 +89,7 @@ SECTION {* kernel *}
 SHORT   {* Status information about the bdd package *}
 PROTO   {* typedef struct s_bddStat
 {
-   long int produced;
+   size_t produced;
    int nodenum;
    int maxnodenum;
    int freenodes;
@@ -113,7 +113,7 @@ ALSO    {* bdd\_stats *}
 */
 typedef struct s_bddStat
 {
-   long int produced;
+   size_t produced;
    int nodenum;
    int maxnodenum;
    int freenodes;
@@ -161,13 +161,13 @@ SECTION {* kernel *}
 SHORT   {* Status information about cache usage *}
 PROTO   {* typedef struct s_bddCacheStat
 {
-   long unsigned int uniqueAccess;
-   long unsigned int uniqueChain;
-   long unsigned int uniqueHit;
-   long unsigned int uniqueMiss;
-   long unsigned int opHit;
-   long unsigned int opMiss;
-   long unsigned int swapCount;
+   size_t uniqueAccess;
+   size_t uniqueChain;
+   size_t uniqueHit;
+   size_t uniqueMiss;
+   size_t opHit;
+   size_t opMiss;
+   size_t swapCount;
 } bddCacheStat; *}
 DESCR   {* The fields are \\[\baselineskip] \begin{tabular}{ll}
   {\bf Name}         & {\bf Number of } \\
@@ -183,13 +183,13 @@ ALSO    {* bdd\_cachestats *}
 */
 typedef struct s_bddCacheStat
 {
-   long unsigned int uniqueAccess;
-   long unsigned int uniqueChain;
-   long unsigned int uniqueHit;
-   long unsigned int uniqueMiss;
-   long unsigned int opHit;
-   long unsigned int opMiss;
-   long unsigned int swapCount;
+   size_t uniqueAccess;
+   size_t uniqueChain;
+   size_t uniqueHit;
+   size_t uniqueMiss;
+   size_t opHit;
+   size_t opMiss;
+   size_t swapCount;
 } bddCacheStat;
 
 /*=== BDD interface prototypes =========================================*/
