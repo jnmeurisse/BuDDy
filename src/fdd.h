@@ -47,19 +47,19 @@ extern "C" {
 
 /* In file fdd.c */
    
-extern int  fdd_extdomain(int*, int);
-extern int  fdd_overlapdomain(int, int);
-extern void fdd_clearall(void);
-extern int  fdd_domainnum(void);
-extern int  fdd_domainsize(int);
-extern int  fdd_varnum(int);
-extern int* fdd_vars(int);
-extern BDD  fdd_ithvar(int, int);
-extern int  fdd_scanvar(BDD, int);
-extern int* fdd_scanallvar(BDD);
-extern BDD  fdd_ithset(int);
-extern BDD  fdd_domain(int);
-extern BDD  fdd_equals(int, int);
+extern int    fdd_extdomain(int64*, int);
+extern int    fdd_overlapdomain(int, int);
+extern void   fdd_clearall(void);
+extern int    fdd_domainnum(void);
+extern int64  fdd_domainsize(int);
+extern int    fdd_varnum(int);
+extern int*   fdd_vars(int);
+extern BDD    fdd_ithvar(int, int);
+extern int    fdd_scanvar(BDD, int);
+extern int*   fdd_scanallvar(BDD);
+extern BDD    fdd_ithset(int);
+extern BDD    fdd_domain(int);
+extern BDD    fdd_equals(int, int);
 extern bddfilehandler fdd_file_hook(bddfilehandler);
 #ifdef CPLUSPLUS
 extern bddstrmhandler fdd_strm_hook(bddstrmhandler);

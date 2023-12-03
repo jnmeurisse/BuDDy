@@ -51,14 +51,14 @@ static void fdd_printset_rec(FILE *, int, int *);
 
 typedef struct s_Domain
 {
-   int realsize;   /* The specified domain (0...N-1) */
-   int binsize;    /* The number of BDD variables representing the domain */
-   int *ivar;      /* Variable indeces for the variable set */
-   BDD var;        /* The BDD variable set */
+   int64 realsize;   /* The specified domain (0...N-1) */
+   int   binsize;    /* The number of BDD variables representing the domain */
+   int   *ivar;      /* Variable indices for the variable set */
+   BDD   var;        /* The BDD variable set */
 } Domain;
 
 
-static void Domain_allocate(Domain*, int);
+static void Domain_allocate(Domain*, int64);
 static void Domain_done(Domain*);
 
 static int    firstbddvar;
@@ -103,24 +103,24 @@ PROTO   {* int fdd_extdomain(int *dom, int num) *}
 DESCR   {* Extends the set of finite domain blocks with the {\tt num}
            domains in
            {\tt dom}. Each entry in {\tt dom} defines the size of a new
-	   finite domain which later on can be used for finite state machine
-	   traversal and other operations on finte domains. Each domain
-	   allocates $\log_2(|dom[i]|)$ BDD variables to be used later.
-	   The ordering is interleaved for the domains defined in each
-	   call to {\tt bdd\_extdomain}. This means that assuming domain
-	   $D_0$ needs 2 BDD variables $x_1$ and $x_2$, and another domain
-	   $D_1$ needs 4 BDD variables $y_1,y_2,y_3$ and $y_4$, then the
-	   order will be $x_1,y_1,x_2,y_2,y_3,y_4$. The index of the first
-	   domain in {\tt dom} is returned. The index of the other domains
-	   are offset from this index with the same offset as in {\tt dom}.
+           finite domain which later on can be used for finite state machine
+           traversal and other operations on finte domains. Each domain
+           allocates $\log_2(|dom[i]|)$ BDD variables to be used later.
+           The ordering is interleaved for the domains defined in each
+           call to {\tt bdd\_extdomain}. This means that assuming domain
+           $D_0$ needs 2 BDD variables $x_1$ and $x_2$, and another domain
+           $D_1$ needs 4 BDD variables $y_1,y_2,y_3$ and $y_4$, then the
+           order will be $x_1,y_1,x_2,y_2,y_3,y_4$. The index of the first
+           domain in {\tt dom} is returned. The index of the other domains
+           are offset from this index with the same offset as in {\tt dom}.
 
-	   The BDD variables needed to encode the domain are created for the
-	   purpose and do not interfere with the BDD variables already in
-	   use. *}
+           The BDD variables needed to encode the domain are created for the
+           purpose and do not interfere with the BDD variables already in
+           use. *}
 RETURN  {* The index of the first domain or a negative error code. *}
 ALSO    {* fdd\_ithvar, fdd\_equals, fdd\_overlapdomain *}
 */
-int fdd_extdomain(int *dom, int num)
+int fdd_extdomain(int64 *dom, int num)
 {
    int offset = fdvarnum;
    int binoffset;
@@ -135,17 +135,17 @@ int fdd_extdomain(int *dom, int num)
    {
       fdvaralloc = num;
       if ((domain=(Domain*)malloc(sizeof(Domain)*num)) == NULL)
-	 return bdd_error(BDD_MEMORY);
+         return bdd_error(BDD_MEMORY);
    }
    else  /* Allocated before */
    {
       if (fdvarnum + num > fdvaralloc)
       {
          fdvaralloc += (num > fdvaralloc) ? num : fdvaralloc;
-	 
-	 domain = (Domain*)realloc(domain, sizeof(Domain)*fdvaralloc);
-	 if (domain == NULL)
-	    return bdd_error(BDD_MEMORY);
+
+         domain = (Domain*)realloc(domain, sizeof(Domain)*fdvaralloc);
+         if (domain == NULL)
+            return bdd_error(BDD_MEMORY);
       }
    }
 
@@ -166,17 +166,17 @@ int fdd_extdomain(int *dom, int num)
       more = 0;
 
       for (n=0 ; n<num ; n++)
-	 if (bn < domain[n+fdvarnum].binsize)
-	 {
-	    more = 1;
-	    domain[n+fdvarnum].ivar[bn] = binoffset++;
-	 }
+         if (bn < domain[n+fdvarnum].binsize)
+         {
+            more = 1;
+            domain[n+fdvarnum].ivar[bn] = binoffset++;
+         }
    }
 
    for (n=0 ; n<num ; n++)
    {
       domain[n+fdvarnum].var = bdd_makeset(domain[n+fdvarnum].ivar,
-					   domain[n+fdvarnum].binsize);
+               domain[n+fdvarnum].binsize);
       bdd_addref(domain[n+fdvarnum].var);
    }
 
@@ -290,7 +290,7 @@ DESCR   {* Returns the size of the domain for the finite domain
 RETURN  {* The size or a negative error code *}
 ALSO    {* fdd\_domainnum *}
 */
-int fdd_domainsize(int v)
+int64 fdd_domainsize(int v)
 {
    if (!bddrunning)
       return bdd_error(BDD_RUNNING);
@@ -550,7 +550,8 @@ RETURN  {* The encoding of the domain*}
 */
 BDD fdd_domain(int var)
 {
-   int n,val;
+   int n;
+   int64 val;
    Domain *dom;
    BDD d;
       
@@ -577,9 +578,9 @@ BDD fdd_domain(int var)
       BDD tmp;
       
       if (val & 0x1)
-	 tmp = bdd_apply( bdd_nithvar(dom->ivar[n]), d, bddop_or );
+         tmp = bdd_apply( bdd_nithvar(dom->ivar[n]), d, bddop_or );
       else
-	 tmp = bdd_apply( bdd_nithvar(dom->ivar[n]), d, bddop_and );
+         tmp = bdd_apply( bdd_nithvar(dom->ivar[n]), d, bddop_and );
 
       val >>= 1;
 
@@ -732,7 +733,8 @@ void fdd_fprintset(FILE *ofile, BDD r)
 
 static void fdd_printset_rec(FILE *ofile, int r, int *set)
 {
-   int n,m,i;
+   int n,i;
+   int64 m;
    int used = 0;
    int *var;
    int *binval;
@@ -748,50 +750,50 @@ static void fdd_printset_rec(FILE *ofile, int r, int *set)
 
       for (n=0 ; n<fdvarnum ; n++)
       {
-	 int firstval=1;
-	 used = 0;
+         int firstval=1;
+         used = 0;
 
-	 for (m=0 ; m<domain[n].binsize ; m++)
-	    if (set[domain[n].ivar[m]] != 0)
-	       used = 1;
-	 
-	 if (used)
-	 {
-	    if (!first)
-	       fprintf(ofile, ", ");
-	    first = 0;
-	    if (filehandler)
-	       filehandler(ofile, n);
-	    else
-	       fprintf(ofile, "%d", n);
-	    printf(":");
+         for (m=0 ; m<domain[n].binsize ; m++)
+            if (set[domain[n].ivar[m]] != 0)
+               used = 1;
 
-	    var = domain[n].ivar;
-	    
-	    for (m=0 ; m<(1<<domain[n].binsize) ; m++)
-	    {
-	       binval = fdddec2bin(n, m);
-	       ok=1;
-	       
-	       for (i=0 ; i<domain[n].binsize && ok ; i++)
-		  if (set[var[i]] == 1  &&  binval[i] != 0)
-		     ok = 0;
-		  else
-		  if (set[var[i]] == 2  &&  binval[i] != 1)
-		     ok = 0;
+         if (used)
+         {
+            if (!first)
+               fprintf(ofile, ", ");
+            first = 0;
+            if (filehandler)
+               filehandler(ofile, n);
+            else
+               fprintf(ofile, "%d", n);
+            printf(":");
 
-	       if (ok)
-	       {
-		  if (firstval)
-		     fprintf(ofile, "%d", m);
-		  else
-		     fprintf(ofile, "/%d", m);
-		  firstval = 0;
-	       }
+            var = domain[n].ivar;
 
-	       free(binval);
-	    }
-	 }
+            for (m=0 ; m<(1LL<<domain[n].binsize) ; m++)
+            {
+               binval = fdddec2bin(n, m);
+               ok=1;
+
+               for (i=0 ; i<domain[n].binsize && ok ; i++)
+                  if (set[var[i]] == 1  &&  binval[i] != 0)
+                     ok = 0;
+                  else
+                     if (set[var[i]] == 2  &&  binval[i] != 1)
+                        ok = 0;
+
+               if (ok)
+               {
+                  if (firstval)
+                     fprintf(ofile, "%lld", m);
+                  else
+                     fprintf(ofile, "/%lld", m);
+                  firstval = 0;
+               }
+
+               free(binval);
+            }
+         }
       }
 
       fprintf(ofile, ">");
@@ -841,12 +843,12 @@ int fdd_scanset(BDD r, int **varset, int *varnum)
       
       for (m=0 ; m<domain[n].binsize && !found ; m++)
       {
-	 for (i=0 ; i<fn && !found ; i++)
-	    if (domain[n].ivar[m] == fv[i])
-	    {
-	       num++;
-	       found=1;
-	    }
+         for (i=0 ; i<fn && !found ; i++)
+            if (domain[n].ivar[m] == fv[i])
+            {
+               num++;
+               found=1;
+            }
       }
    }
 
@@ -859,12 +861,12 @@ int fdd_scanset(BDD r, int **varset, int *varnum)
       
       for (m=0 ; m<domain[n].binsize && !found ; m++)
       {
-	 for (i=0 ; i<fn && !found ; i++)
-	    if (domain[n].ivar[m] == fv[i])
-	    {
-	       (*varset)[num++] = n;
-	       found=1;
-	    }
+         for (i=0 ; i<fn && !found ; i++)
+            if (domain[n].ivar[m] == fv[i])
+            {
+               (*varset)[num++] = n;
+               found=1;
+            }
       }
    }
 
@@ -901,10 +903,10 @@ BDD fdd_makeset(int *varset, int varnum)
    for (n=0 ; n<varnum ; n++)
       if (varset[n] < 0  ||  varset[n] >= fdvarnum)
       {
-	 bdd_error(BDD_VAR);
-	 return bddfalse;
+         bdd_error(BDD_VAR);
+         return bddfalse;
       }
-	  
+
    for (n=0 ; n<varnum ; n++)
    {
       bdd_addref(res);
@@ -1030,11 +1032,11 @@ static void Domain_done(Domain* d)
 }
 
 
-static void Domain_allocate(Domain* d, int range)
+static void Domain_allocate(Domain* d, int64 range)
 {
-   int calcsize = 2;
+   int64 calcsize = 2;
    
-   if (range <= 0  || range > INT_MAX/2)
+   if (range <= 0  || range > LLONG_MAX/2)
    {
       bdd_error(BDD_RANGE);
       return;
@@ -1054,7 +1056,7 @@ static void Domain_allocate(Domain* d, int range)
 }
 
 
-int *fdddec2bin(int var, int val)
+int *fdddec2bin(int var, int64 val)
 {
    int *res;
    int n = 0;
@@ -1065,7 +1067,7 @@ int *fdddec2bin(int var, int val)
    while (val > 0)
    {
       if (val & 0x1)
-	 res[n] = 1;
+         res[n] = 1;
       val >>= 1;
       n++;
    }

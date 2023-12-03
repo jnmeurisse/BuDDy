@@ -418,7 +418,8 @@ static void bdd_printdot_rec(ostream& o, int r)
 
 static void fdd_printset_rec(ostream &o, int r, int *set)
 {
-   int n,m,i;
+   int n,i;
+   int64 m;
    int used = 0;
    int *binval;
    int ok, first;
@@ -431,53 +432,53 @@ static void fdd_printset_rec(ostream &o, int r, int *set)
       o << "<";
       first=1;
       int fdvarnum = fdd_domainnum();
-	 
+
       for (n=0 ; n<fdvarnum ; n++)
       {
-	 int firstval=1;
-	 used = 0;
-	 int binsize = fdd_varnum(n);
-	 int *vars = fdd_vars(n);
-	 
-	 for (m=0 ; m<binsize ; m++)
-	    if (set[vars[m]] != 0)
-	       used = 1;
-	 
-	 if (used)
-	 {
-	    if (!first)
-	       o << ", ";
-	    first = 0;
-	    if (strmhandler_fdd)
-	       strmhandler_fdd(o, n);
-	    else
-	       o << n;
-	    o << ":";
+         int firstval=1;
+         used = 0;
+         int binsize = fdd_varnum(n);
+         int *vars = fdd_vars(n);
 
-	    for (m=0 ; m<(1<<binsize) ; m++)
-	    {
-	       binval = fdddec2bin(n, m);
-	       ok=1;
+         for (m=0 ; m<binsize ; m++)
+            if (set[vars[m]] != 0)
+               used = 1;
+
+         if (used)
+         {
+            if (!first)
+               o << ", ";
+            first = 0;
+            if (strmhandler_fdd)
+               strmhandler_fdd(o, n);
+            else
+               o << n;
+            o << ":";
+
+            for (m=0 ; m<(1LL<<binsize) ; m++)
+            {
+               binval = fdddec2bin(n, m);
+               ok=1;
 	       
-	       for (i=0 ; i<binsize && ok ; i++)
-		  if (set[vars[i]] == 1  &&  binval[i] != 0)
-		     ok = 0;
-		  else
-		  if (set[vars[i]] == 2  &&  binval[i] != 1)
-		     ok = 0;
+               for (i=0 ; i<binsize && ok ; i++)
+                  if (set[vars[i]] == 1  &&  binval[i] != 0)
+                     ok = 0;
+                  else
+                     if (set[vars[i]] == 2  &&  binval[i] != 1)
+                        ok = 0;
 
-	       if (ok)
-	       {
-		  if (firstval)
-		     o << m;
-		  else
-		     o << "/" << m;
-		  firstval = 0;
-	       }
+               if (ok)
+               {
+                  if (firstval)
+                     o << m;
+                  else
+                     o << "/" << m;
+                  firstval = 0;
+               }
 
-	       free(binval);
-	    }
-	 }
+               free(binval);
+            }
+         }
       }
 
       o << ">";
