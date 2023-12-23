@@ -137,11 +137,10 @@ extern bddCacheStat bddcachestats;
 #define UNMARKp(p)  (node->level &= MARKOFF)
 #define MARKEDp(p)  (node->level & MARKON)
 
-   /* Hashfunctions */
+   /* Hashfunctions : PAIR macro implements the Cantor Pairing function */
 
 #define PAIR(a,b)      ((unsigned int)((((unsigned int)a)+((unsigned int)b))*(((unsigned int)a)+((unsigned int)b)+((unsigned int)1))/((unsigned int)2)+((unsigned int)a)))
 #define TRIPLE(a,b,c)  ((unsigned int)(PAIR((unsigned int)c,PAIR(a,b))))
-
 
    /* Inspection of BDD nodes */
 #define ISCONST(a) ((a) < 2)
@@ -178,6 +177,7 @@ extern bddCacheStat bddcachestats;
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 #define NEW(t,n) ( (t*)malloc(sizeof(t)*(n)) )
+#define DIM(v) (sizeof(v)/sizeof((v)[0]))
 
 
 /*=== KERNEL PROTOTYPES ================================================*/
