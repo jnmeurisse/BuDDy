@@ -451,8 +451,8 @@ class bdd
    bdd operator<(const bdd &r) const;
    bdd operator<<(const bdd &r) const;
    bdd operator<<=(const bdd &r);
-   int operator==(const bdd &r) const;
-   int operator!=(const bdd &r) const;
+   bool operator==(const bdd &r) const;
+   bool operator!=(const bdd &r) const;
    
 private:
    BDD root;
@@ -787,10 +787,10 @@ inline bdd bdd::operator<<(const bdd &r) const
 inline bdd bdd::operator<<=(const bdd &r)
 { return (*this=bdd_apply(*this,r,bddop_invimp)); }
 
-inline int bdd::operator==(const bdd &r) const
+inline bool bdd::operator==(const bdd &r) const
 { return r.root==root; }
 
-inline int bdd::operator!=(const bdd &r) const
+inline bool bdd::operator!=(const bdd &r) const
 { return r.root!=root; }
 
 inline bdd bdd_true(void)
