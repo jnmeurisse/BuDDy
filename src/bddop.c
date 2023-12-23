@@ -34,6 +34,7 @@
   AUTH:  Jorn Lind
   DATE:  (C) nov 1997
 *************************************************************************/
+#include "config.h"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
