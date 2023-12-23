@@ -50,6 +50,7 @@
 #include "cache.h"
 #include "prime.h"
 
+
 /*************************************************************************
   Various definitions and global variables
 *************************************************************************/
@@ -225,6 +226,7 @@ int bdd_init(int initnodesize, int cs)
    bddcachestats.opHit = 0;
    bddcachestats.opMiss = 0;
    bddcachestats.swapCount = 0;
+   memset(bddcachestats.chainAccess, 0, sizeof(bddcachestats.chainAccess));
  
    bdd_gbc_hook(bdd_default_gbchandler);
    bdd_error_hook(bdd_default_errhandler);
@@ -672,7 +674,7 @@ ALSO    {* bdd\_versionnum *}
 char *bdd_versionstr(void)
 {
    static char str[] = "BuDDy -  release " PACKAGE_VERSION;
-   return str;
+	   return str;
 }
 
 
@@ -733,6 +735,11 @@ void bdd_cachestats(bddCacheStat *s)
 }
 
 
+static float safe_divide(size_t a, size_t b)
+{
+	return (b == 0) ? 0.0f : ((float)a) / (float)b;
+}
+
 /*
 NAME    {* bdd\_printstat *}
 EXTRA   {* bdd\_fprintstat *}
@@ -760,15 +767,30 @@ void bdd_fprintstat(FILE *ofile)
    fprintf(ofile, "Unique Chain:   %zd\n", s.uniqueChain);
    fprintf(ofile, "Unique Hit:     %zd\n", s.uniqueHit);
    fprintf(ofile, "Unique Miss:    %zd\n", s.uniqueMiss);
+   fprintf(ofile, "Chain Lookups:\n");
+   for (int idx = 0; idx < DIM(s.chainAccess) - 1; idx++) {
+	   fprintf(ofile, "      %d: %-10zd (%.2f)\n",
+		   idx + 1,
+		   s.chainAccess[idx],
+		   safe_divide(s.chainAccess[idx], s.uniqueAccess) * 100.0f
+	   );
+   }
+   fprintf(ofile, "  >= %zd: %-10zd (%.2f)\n",
+		   DIM(s.chainAccess),
+		   s.chainAccess[DIM(s.chainAccess) - 1],
+		   safe_divide(s.chainAccess[DIM(s.chainAccess) - 1], s.uniqueAccess) * 100.0f
+		);
    fprintf(ofile, "=> Hit rate =   %.2f\n",
-      (s.uniqueHit+s.uniqueMiss > 0) ? 
-      ((float)s.uniqueHit)/((float)s.uniqueHit+s.uniqueMiss) : 0);
+	   safe_divide(s.uniqueHit, s.uniqueHit + s.uniqueMiss) * 100.0f
+   );
+   fprintf(ofile, "\n");
    fprintf(ofile, "Operator Hits:  %zd\n", s.opHit);
    fprintf(ofile, "Operator Miss:  %zd\n", s.opMiss);
    fprintf(ofile, "=> Hit rate =   %.2f\n",
-      (s.opHit+s.opMiss > 0) ? 
-      ((float)s.opHit)/((float)s.opHit+s.opMiss) : 0);
+	   safe_divide(s.opHit, s.opHit + s.opMiss) * 100.0f);
+   fprintf(ofile, "\n");
    fprintf(ofile, "Swap count =    %zd\n", s.swapCount);
+   fprintf(ofile, "\n");
 }
 
 
@@ -1264,6 +1286,7 @@ int bdd_makenode(unsigned int level, int low, int high)
 
 #ifdef CACHESTATS
    bddcachestats.uniqueAccess++;
+   int chain_length = -1;
 #endif
    
       /* check whether childs are equal */
@@ -1280,13 +1303,18 @@ int bdd_makenode(unsigned int level, int low, int high)
       {
 #ifdef CACHESTATS
     bddcachestats.uniqueHit++;
+	if (chain_length >= 0) {
+		bddcachestats.chainAccess[MIN(chain_length, DIM(bddcachestats.chainAccess)-1)] += 1;
+	}
+
 #endif
-    return res;
+	return res;
       }
 
       res = bddnodes[res].next;
 #ifdef CACHESTATS
       bddcachestats.uniqueChain++;
+	  chain_length++;
 #endif
    }
    

@@ -173,13 +173,14 @@ PROTO   {* typedef struct s_bddCacheStat
 } bddCacheStat; *}
 DESCR   {* The fields are \\[\baselineskip] \begin{tabular}{ll}
   {\bf Name}         & {\bf Number of } \\
-  uniqueAccess & accesses to the unique node table \\
-  uniqueChain  & iterations through the cache chains in the unique node table\\
-  uniqueHit    & entries actually found in the the unique node table \\
-  uniqueMiss   & entries not found in the the unique node table \\
-  opHit        & entries found in the operator caches \\
-  opMiss       & entries not found in the operator caches \\
-  swapCount    & number of variable swaps in reordering \\
+  uniqueAccess    & accesses to the unique node table \\
+  uniqueChain     & iterations through the cache chains in the unique node table\\
+  uniqueHit       & entries actually found in the the unique node table \\
+  uniqueMiss      & entries not found in the the unique node table \\
+  opHit           & entries found in the operator caches \\
+  opMiss          & entries not found in the operator caches \\
+  swapCount       & number of variable swaps in reordering \\
+  chainAccess     & number of access in cache chains of length 1, 2, ... \\
 \end{tabular} *}
 ALSO    {* bdd\_cachestats *}
 */
@@ -192,6 +193,7 @@ typedef struct s_bddCacheStat
    size_t opHit;
    size_t opMiss;
    size_t swapCount;
+   size_t chainAccess[10];
 } bddCacheStat;
 
 /*=== BDD interface prototypes =========================================*/
